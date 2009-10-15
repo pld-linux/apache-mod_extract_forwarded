@@ -14,6 +14,7 @@ BuildRequires:	%{apxs}
 BuildRequires:	apache-devel >= 2.0.40
 BuildRequires:	rpmbuild(macros) >= 1.268
 Requires:	apache(modules-api) = %apache_modules_api
+Requires:	apache(mod_proxy)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_pkglibdir	%(%{apxs} -q LIBEXECDIR 2>/dev/null)
