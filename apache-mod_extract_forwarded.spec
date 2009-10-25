@@ -14,31 +14,31 @@ BuildRequires:	%{apxs}
 BuildRequires:	apache-devel >= 2.0.40
 BuildRequires:	rpmbuild(macros) >= 1.268
 Requires:	apache(modules-api) = %apache_modules_api
-Requires:	apache(mod_proxy)
-Conflicts:	apache(mod_rpaf)
-Provides:	apache(mod_extract_forwarded)
+Requires:	apache-mod_proxy
+Conflicts:	apache-mod_rpaf
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_pkglibdir	%(%{apxs} -q LIBEXECDIR 2>/dev/null)
-%define		_sysconfdir	%(%{apxs} -q SYSCONFDIR 2>/dev/null)
+%define		_sysconfdir	%(%{apxs} -q SYSCONFDIR 2>/dev/null)/conf.d
 
 %description
-mod_extract_forwarded is designed to transparently (to other Apache modules)
-modify the information about the connection over which an HTTP request is
-received when that connection is not directly from a requesting client to
-the Apache server but is instead via one or more intervening proxy servers.
+mod_extract_forwarded is designed to transparently (to other Apache
+modules) modify the information about the connection over which an
+HTTP request is received when that connection is not directly from a
+requesting client to the Apache server but is instead via one or more
+intervening proxy servers.
 
-Operation relies on the X-Forwarded-For header, inserted by proxy servers.
-This is a non-RFC-standard request header which was introduced by the Squid
-caching proxy server's developers and which is now also supported, for
-reverse proxy server operation, by Apache 2. If the intervening proxy
-servers doesn't add such headers, we can't do anything about it. It is
-worth noting that a normally configured Squid proxy server will add to the
-X-Forwarded-For. However, when used as a proxy server, Apache prior to
-version 2 does not add X-Forwarded-For headers unless the third party
-mod_proxy_add_forward module has been added to it. This can leave
-potentially important gaps in the information recorded in X-Forwarded-For
-header. 
+Operation relies on the X-Forwarded-For header, inserted by proxy
+servers. This is a non-RFC-standard request header which was
+introduced by the Squid caching proxy server's developers and which is
+now also supported, for reverse proxy server operation, by Apache 2.
+If the intervening proxy servers doesn't add such headers, we can't do
+anything about it. It is worth noting that a normally configured Squid
+proxy server will add to the X-Forwarded-For. However, when used as a
+proxy server, Apache prior to version 2 does not add X-Forwarded-For
+headers unless the third party mod_proxy_add_forward module has been
+added to it. This can leave potentially important gaps in the
+information recorded in X-Forwarded-For header.
 
 %prep
 %setup -q -n %{mod_name}
@@ -48,9 +48,9 @@ header.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_pkglibdir},%{_sysconfdir}/httpd.conf}
-install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/httpd.conf/90_mod_%{mod_name}.conf
-install .libs/mod_%{mod_name}.so $RPM_BUILD_ROOT%{_pkglibdir}
+install -d $RPM_BUILD_ROOT{%{_pkglibdir},%{_sysconfdir}}
+cp -a %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/90_mod_%{mod_name}.conf
+install -p .libs/mod_%{mod_name}.so $RPM_BUILD_ROOT%{_pkglibdir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -66,5 +66,5 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc README INSTALL
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/httpd.conf/*_mod_%{mod_name}.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/*_mod_%{mod_name}.conf
 %attr(755,root,root) %{_pkglibdir}/*.so
