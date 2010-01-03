@@ -3,7 +3,7 @@
 Summary:	Apache module: Extract X-Forwarded-For header
 Name:		apache-mod_%{mod_name}
 Version:	2.0.2
-Release:	1
+Release:	2
 License:	Apache
 Group:		Networking/Daemons/HTTP
 Source0:	http://www.openinfo.co.uk/apache/%{mod_name}-%{version}.tar.gz
